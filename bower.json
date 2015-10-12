@@ -1,9 +1,9 @@
 {
-  "name": "WebFEBoilerPlate",
+  "name": "44hz",
   "version": "0.0.0",
-  "homepage": "https://github.com/akshat1/WebFEBoilerPlate",
+  "homepage": "https://github.com/lagr/44hz",
   "authors": [
-    "akshat-platfora <akshat@platfora.com>"
+    " a"
   ],
   "license": "MIT",
   "private": true,
@@ -15,7 +15,6 @@
     "tests"
   ],
   "dependencies": {
-    "knockout": "~3.2.0",
-    "lodash": "~2.4.1"
+    "lodash": "~3.1.5"
   }
 }

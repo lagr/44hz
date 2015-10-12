@@ -1,7 +1,6 @@
 var gulp           = require("gulp");
+var gutil          = require('gulp-util');
 var _              = require("lodash");
-var runSequence    = require('run-sequence');
-var run            = require('gulp-run');
 var rubysass       = require('gulp-ruby-sass');
 var coffee         = require('gulp-coffee');
 var haml           = require('gulp-ruby-haml');
@@ -14,7 +13,7 @@ var exec           = require('child_process').exec;
 
 var Sources = {
   HAML     : 'web/haml/**/*.haml',
-  SASS     : 'web/css/**/*.scss',
+  SASS     : 'web/css/**/*.sass',
   LIB      : 'web/lib',
   COFFEE   : 'web/coffee/**/*.coffee',
   IMAGES   : 'web/images/*'
@@ -63,9 +62,7 @@ gulp.task('coffee', function(){
     .pipe(gulp.dest(Destinations.JS));
 });
 
-gulp.task('js', function(){
-  runSequence(['coffee']);
-});
+gulp.task('js', ['coffee']);
 
 gulp.task('sass', function(){
   return gulp.src(Sources.SASS)
@@ -93,21 +90,17 @@ gulp.task('clean', function(){
 // Copy other lib resources, like css via this.
 gulp.task('js-lib', function(){
   var jsFilter = gulpFilter('*.js');
-  return gulp.src([bowerPath('knockout/dist/knockout.js'), bowerPath('lodash/dist/lodash.js')])
+  return gulp.src([bowerPath('lodash/dist/lodash.js')])
     .pipe(jsFilter)
     .pipe(concat('lib.js'))
     .pipe(gulp.dest(Destinations.LIB));
 });
 
 // Call all lib tasks here.
-gulp.task('lib', function(){
-  runSequence(['js-lib']);
-});
+gulp.task('lib', ['js-lib']);
 
-gulp.task('build', function(){
-  runSequence(['mkdir-setup'], ['lib', 'image-copy', 'haml', 'sass', 'js']);
-});
+gulp.task('build', ['mkdir-setup', 'lib', 'image-copy', 'haml', 'sass', 'js']);
 
-gulp.task('default', function(){
-  gulp.run('build');
-});
+gulp.task('default', ['watch']);
+
+gulp.task('watch', ['lib', 'image-copy', 'haml', 'sass', 'js']);
