@@ -3,7 +3,6 @@ npm-debug.log
 node_modules
 .sass-cache
 bower_components
-dist
 *.log
 .imagecache
 *.sublime-workspace
