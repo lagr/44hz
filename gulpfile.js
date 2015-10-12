@@ -99,7 +99,7 @@ gulp.task('js-lib', function(){
 // Call all lib tasks here.
 gulp.task('lib', ['js-lib']);
 
-gulp.task('build', ['mkdir-setup', 'lib', 'image-copy', 'haml', 'sass', 'js']);
+gulp.task('build', ['lib', 'image-copy', 'haml', 'sass', 'js']);
 
 gulp.task('default', ['watch']);
 
