@@ -1,4 +1,5 @@
 var gulp           = require("gulp");
+var run = require('gulp-run');
 var gutil          = require('gulp-util');
 var _              = require("lodash");
 var rubysass       = require('gulp-ruby-sass');
@@ -9,6 +10,7 @@ var concat         = require('gulp-concat');
 var clean          = require('gulp-clean');
 var gulpFilter     = require('gulp-filter');
 var concat         = require('gulp-concat');
+var webserver       = require('gulp-webserver');
 var exec           = require('child_process').exec;
 
 var Sources = {
@@ -16,7 +18,8 @@ var Sources = {
   SASS     : 'web/css/**/*.sass',
   LIB      : 'web/lib',
   COFFEE   : 'web/coffee/**/*.coffee',
-  IMAGES   : 'web/images/*'
+  IMAGES   : 'web/images/*',
+  FONTS   : 'web/fonts/*'
 };
 
 var Destinations = {
@@ -24,7 +27,8 @@ var Destinations = {
   CSS      : 'dist/css',
   LIB      : 'dist/lib/',
   JS       : 'dist/js',
-  IMAGES   : 'dist/images'
+  IMAGES   : 'dist/images',
+  FONTS   : 'dist/fonts'
 };
 
 var FinalJSName = 'app.js';
@@ -81,6 +85,11 @@ gulp.task('image-copy', function(){
     .pipe(gulp.dest(Destinations.IMAGES));
 });
 
+gulp.task('fonts', function(){
+  return gulp.src(Sources.FONTS)
+    .pipe(gulp.dest(Destinations.FONTS));
+});
+
 gulp.task('clean', function(){
   var dirs = _.values(Destinations, {read:false});
   return gulp.src(dirs)
@@ -99,8 +108,28 @@ gulp.task('js-lib', function(){
 // Call all lib tasks here.
 gulp.task('lib', ['js-lib']);
 
-gulp.task('build', ['lib', 'image-copy', 'haml', 'sass', 'js']);
+gulp.task('build', ['clean', 'mkdir-setup', 'lib', 'fonts', 'image-copy', 'haml', 'sass', 'js']);
 
 gulp.task('default', ['watch']);
 
-gulp.task('watch', ['lib', 'image-copy', 'haml', 'sass', 'js']);
+gulp.task('watch', function(){ 
+gulp.watch(Sources.LIB, ['lib']);
+gulp.watch(Sources.FONTS, ['fonts']);
+gulp.watch(Sources.IMAGES, ['image-copy']);
+gulp.watch(Sources.HAML, ['haml']); 
+gulp.watch(Sources.SASS, ['sass']); 
+gulp.watch(Sources.COFFEE, ['js']);
+});
+
+gulp.task('webserver', function() {
+  gulp.src('dist')
+    .pipe(webserver({
+      host: '0.0.0.0',
+      livereload: true,
+      directoryListing: {
+          enable:true,
+          path: 'dist'
+      },
+      open: true
+    }));
+});
